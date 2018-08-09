@@ -134,26 +134,13 @@ audit () {
 }
 
 cycle() {
-    if [ -f "${DYNAMIC_COLORS_ROOT}/colorscheme" ]; then
-        current=`head -1 "${DYNAMIC_COLORS_ROOT}/colorscheme"`
-        found=false
-        cd "$COLORSCHEMES"
-        for file in *.sh; do
-            if [ $found = true ]; then
-                switch "${file%.sh}"
-                return
-            fi
-            if [ $file = "${current}.sh" ]; then
-                found=true
-            fi
-        done
+    f="${DYNAMIC_COLORS_ROOT}/cycle-list"
+    if [ -f "${f}" ]; then
+        current=`head -1 "${f}"`
+        rest=`tail -n +2 "${f}"`
+        echo -e "${rest}\n${current}" > "${f}"
+        switch `echo ${rest} | head -1`
     fi
-
-    cd "$COLORSCHEMES"
-    for file in *.sh; do
-        switch "${file%.sh}"
-        break
-    done
 }
 
 list () {
