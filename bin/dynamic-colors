@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-
 USAGE="Usage: dynamic-colors [help|cycle|init|list|switch <colorscheme>]"
 HELP="\
 dynamic-colors <command>
@@ -136,10 +135,12 @@ audit () {
 cycle() {
     f="${DYNAMIC_COLORS_ROOT}/cycle-list"
     if [ -f "${f}" ]; then
+        ( flock -n 9 || exit 1
         current=`head -1 "${f}"`
         rest=`tail -n +2 "${f}"`
         echo -e "${rest}\n${current}" > "${f}"
         switch `echo ${rest} | head -1`
+       ) 9<$f
     fi
 }
 
